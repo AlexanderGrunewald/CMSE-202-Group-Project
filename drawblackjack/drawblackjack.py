@@ -44,6 +44,10 @@ class GameDisplay():
         self.deck_color = "red"
         
     def validate_card_(self, card):
+        """
+        Returns a card with the correctly formatted strings for idenfication. 
+        Input must be a tuple of strings ('value', 'suit')
+        """
         if (isinstance(card, tuple) and len(card) == 2) == False:
             raise Exception("'card' should be a tuple of length 2: (value, suit)")
         if (card[0] in card_dict) == False:
@@ -54,7 +58,8 @@ class GameDisplay():
         
     def add_dealer_card(self, card, facing):
         """
-        card: tuple | (value, suit)
+        Adds/changes the dealer's cards one at a time, specifying between the face-up and face-down ones.
+        card: tuple of strings | (value, suit)
         facing: str | "up", "down"
         """
         if (facing in ["up", "down"]) == False:
@@ -65,7 +70,8 @@ class GameDisplay():
         
     def add_player_card(self, card):
         """
-        card: tuple | (value, suit)
+        Gives the player a card
+        card: tuple of strings | (value, suit)
         """
         if len(self.player_cards) >= 6:
             raise Exception("Can't draw more than 6 cards!")
@@ -74,6 +80,9 @@ class GameDisplay():
         self.player_card_count = len(self.player_cards)
         
     def change_deck_color(self):
+        """
+        Toggles the color of the back of the cards between blue and red
+        """
         if self.deck_color == "red":
             self.deck_color = "blue"
         elif self.deck_color == "blue":
@@ -94,7 +103,7 @@ class GameDisplay():
     
     def place_card_(self, ary, x, y):
         """
-        Places card at pixel location (x, y) on board, top left being (0, 0) 
+        Places card at pixel location (x, y) on board, top left being (0, 0).  
         """
         try:
             self.board_img[y:y+45, x:x+33] = ary
@@ -102,7 +111,9 @@ class GameDisplay():
             raise Exception("'ary' must be a 33x45 pixel image array. Try using output from GameBoard.get_card_ary_()")
             
     def draw(self):
-        
+        """
+        Draws the current state of the board using matplotlib.
+        """
         self.board_img = self.ref_img.copy()
         
         for ci in range(self.player_card_count):
@@ -119,6 +130,27 @@ class GameDisplay():
         elif self.deck_color == "blue":
             ary = self.card_img[48:93, 1:34]
         self.place_card_(ary, 129, 100)
+        
+        plt.figure(figsize = (12, 15))
+        plt.imshow(self.board_img)
+        
+    def draw_gameover(self):
+        """
+        Similar to draw(), but reveals the dealer's facedown card 
+        """
+        self.board_img = self.ref_img.copy()
+        
+        for ci in range(self.player_card_count):
+            ary = self.get_card_ary_(self.player_cards[ci])
+            x = p_card_loc_dict[self.player_card_count][ci][0]
+            y = p_card_loc_dict[self.player_card_count][ci][1]
+            self.place_card_(ary, x, y)
+            
+        ary = self.get_card_ary_(self.dealer_cards["up"])
+        self.place_card_(ary, 92, 100)
+        ary = self.get_card_ary_(self.dealer_cards["down"])
+        self.place_card_(ary, 129, 100)
+        
         
         plt.figure(figsize = (12, 15))
         plt.imshow(self.board_img)
