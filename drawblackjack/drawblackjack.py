@@ -30,14 +30,32 @@ p_card_loc_dict = {0:[],
                    5:[(330, 100), (367, 100), (404, 100), (349, 149), (386, 149)],
                    6:[(330, 100), (367, 100), (404, 100), (330, 149), (367, 149), (404, 149)]}
 
-img = mpimg.imread("8BitDeckAssets.png")
-bimg = mpimg.imread("gameboard.png")
+d_card_loc_dict = {0:[],
+                   1:[(97, 149)],
+                   2:[(79, 149), (116, 149)],
+                   3:[(60, 149), (97, 149), (134, 149)]}
 
+try:
+    img = mpimg.imread("8BitDeckAssets.png")
+except:
+    img = mpimg.imread("drawblackjack/8BitDeckAssets.png")
+try:
+    bimg = mpimg.imread("gameboard.png")
+except:
+    bimg = mpimg.imread("drawblackjack/gameboard.png")
+try:
+    wlimg = mpimg.imread("winlosstext.png")
+except:
+    wlimg = mpimg.imread("drawblackjack/winlosstext.png")
+
+    
+    
 class GameDisplay():
     def __init__(self):
         self.player_cards = []
         self.player_card_count = 0
         self.dealer_cards = {"up":None, "down":None}
+        self.dealer_extra = []
         self.card_img = img
         self.ref_img = bimg.copy()          #unchanging, used to redraw
         self.board_img = bimg.copy()        #changing
@@ -67,6 +85,18 @@ class GameDisplay():
             
         c = self.validate_card_(card)
         self.dealer_cards[facing] = c
+        
+    def add_dealer_extra(self, card):
+        """
+        Add to the dealer's extra cards. Should only be used at the end of the game
+        card: tuple of strings | (value, suit)
+        facing: str | "up", "down"
+        """
+        if len(self.dealer_extra) >= 3:
+            raise Exception("Dealer can't draw more than 3 extra")
+            
+        c = self.validate_card_(card)
+        self.dealer_extra.append(c)
         
     def add_player_card(self, card):
         """
@@ -132,11 +162,12 @@ class GameDisplay():
         self.place_card_(ary, 129, 100)
         
         plt.figure(figsize = (12, 15))
+        plt.axis("off")
         plt.imshow(self.board_img)
         
-    def draw_gameover(self):
+    def draw_gameover(self, win):
         """
-        Similar to draw(), but reveals the dealer's facedown card 
+        Similar to draw(), but reveals the dealer's facedown card and a victory message 
         """
         self.board_img = self.ref_img.copy()
         
@@ -151,6 +182,17 @@ class GameDisplay():
         ary = self.get_card_ary_(self.dealer_cards["down"])
         self.place_card_(ary, 129, 100)
         
+        for ci in range(len(self.dealer_extra)):
+            ary = self.get_card_ary_(dealer_extra[ci])
+            x = d_card_loc_dict[len(self.dealer_extra)][ci][0]
+            y = d_card_loc_dict[len(self.dealer_extra)][ci][1]
+            self.place_card_(ary, x, y)
+            
+        if win == True:
+            self.board_img[32:52, 195:303] = wlimg[:20, :108]
+        elif win == False:
+            self.board_img[32:51, 186:313] = wlimg[20:39, :127]
         
         plt.figure(figsize = (12, 15))
+        plt.axis("off")
         plt.imshow(self.board_img)
