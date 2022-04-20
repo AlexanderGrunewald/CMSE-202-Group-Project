@@ -183,7 +183,7 @@ class GameDisplay():
         self.place_card_(ary, 129, 100)
         
         for ci in range(len(self.dealer_extra)):
-            ary = self.get_card_ary_(dealer_extra[ci])
+            ary = self.get_card_ary_(self.dealer_extra[ci])
             x = d_card_loc_dict[len(self.dealer_extra)][ci][0]
             y = d_card_loc_dict[len(self.dealer_extra)][ci][1]
             self.place_card_(ary, x, y)

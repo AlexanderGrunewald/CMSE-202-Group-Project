@@ -27,6 +27,7 @@ class Blackjack:
         
         self.does_draw = draw
         self.is_active = True
+        self.player_win = None
         
         if self.does_draw == True: #initalize display
             self.display = dbj.GameDisplay()
@@ -99,6 +100,11 @@ class Blackjack:
             clear_output()
             self.display.draw_gameover(win = win)
         
+        if win == True:
+            self.player_win = True
+        else:
+            self.player_win = False
+            
         return win
         
     def stay(self):
@@ -108,6 +114,17 @@ class Blackjack:
         
         self.end()
 
+    def aces(self):
+        """Returns number of aces in player's hand"""
+        
+        aces = 0
+        for card in (self.player):
+            val = card[1]
+            if val == "Ace":
+                aces += 1
+                
+        return aces
+        
     def point(self, who = "player"):
         '''Check the player's points'''
         points = 0
@@ -119,7 +136,7 @@ class Blackjack:
                 if val == "Ace":
                     aces += 1
         elif who == "dealer":
-            for card in self.dealer:
+            for card in (self.dealer + self.dealer_extra):
                 val = card[1]
                 points += val_dict[val]
                 if val == "Ace":
