@@ -69,7 +69,7 @@ class Blackjack:
         if self.check_bust() == True:
             self.end(bust = True)
             
-        if self.point == 21:
+        if self.point() == 21:
             self.end()
             
     def end(self, bust = False):
@@ -78,7 +78,7 @@ class Blackjack:
         points_d = self.point(who = "dealer")
         
         # Dealer stuff, hit up to 16, stay on 17
-        # Currently not working
+        
         while points_d < 17:
             c = self.deck.pop()
             self.dealer_extra.append(c)
@@ -88,6 +88,8 @@ class Blackjack:
         
         self.is_active = False
         
+        if points_d > 21:
+            win = True
         if points_p > points_d:
             win = True
         else:
@@ -165,3 +167,8 @@ class Blackjack:
     def play(self):
         '''Play the game and collect data'''
         pass
+    
+    def get_features(self):
+        '''Return neural network features in proper format'''
+        rnd = len(self.player) - 2
+        return [[self.point(), self.aces(), val_dict[self.dealer[0][1]], rnd]]
