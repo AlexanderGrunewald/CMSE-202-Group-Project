@@ -79,7 +79,7 @@ class Blackjack:
         
         # Dealer stuff, hit up to 16, stay on 17
         
-        while points_d < 17:
+        while points_d < 17 and points_d < points_p:
             c = self.deck.pop()
             self.dealer_extra.append(c)
             if self.does_draw == True:
@@ -88,12 +88,13 @@ class Blackjack:
         
         self.is_active = False
         
-        if points_d > 21:
-            win = True
         if points_p > points_d:
             win = True
         else:
             win = False
+            
+        if points_d > 21:
+            win = True
             
         if bust == True:
             win = False
