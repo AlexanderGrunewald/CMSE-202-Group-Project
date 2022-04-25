@@ -54,7 +54,7 @@ class Blackjack:
             self.end_()
             
     def shuffle_(self):
-        random.shuffle_(self.deck)
+        random.shuffle(self.deck)
     
     def hit(self):
         """Simulate the player hitting"""
