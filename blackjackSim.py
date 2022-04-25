@@ -23,7 +23,7 @@ class Blackjack:
         self.dealer = [] #Dealer's first two cards
         self.dealer_extra = [] #Extra dealer cards they pick up at the end
         
-        self.shuffle()
+        self.shuffle_()
         
         self.does_draw = draw
         self.is_active = True
@@ -48,15 +48,16 @@ class Blackjack:
             self.display.draw()
             
         if self.point(who = "dealer") == 21: #Game ends automatically if dealer draws 21
-            self.end()
+            self.end_()
         
         if self.point() == 21: #Game ends automatically if player is dealt 21
-            self.end()
+            self.end_()
             
-    def shuffle(self):
-        random.shuffle(self.deck)
+    def shuffle_(self):
+        random.shuffle_(self.deck)
     
     def hit(self):
+        """Simulate the player hitting"""
         if self.is_active == False:
             raise Exception("Game is over")
         
@@ -67,12 +68,12 @@ class Blackjack:
             self.display.draw()
 
         if self.check_bust() == True:
-            self.end(bust = True)
+            self.end_(bust = True)
             
         if self.point() == 21:
-            self.end()
+            self.end_()
             
-    def end(self, bust = False):
+    def end_(self, bust = False):
         """End game. Return if player won or not"""
         points_p = self.point()
         points_d = self.point(who = "dealer")
@@ -115,9 +116,9 @@ class Blackjack:
         if self.is_active == False:
             raise Exception("Game is over")
         
-        self.end()
+        self.end_()
 
-    def aces(self):
+    def aces_(self):
         """Returns number of aces in player's hand"""
         
         aces = 0
@@ -129,7 +130,7 @@ class Blackjack:
         return aces
         
     def point(self, who = "player"):
-        '''Check the player's points'''
+        '''Return the player's points'''
         points = 0
         aces = 0
         if who == "player":
@@ -159,17 +160,8 @@ class Blackjack:
             return True
         else:
             return False
-
-    def reset(self):
-        '''Reset the game'''
-        self.__init__()
-        pass
-    
-    def play(self):
-        '''Play the game and collect data'''
-        pass
     
     def get_features(self):
         '''Return neural network features in proper format'''
         rnd = len(self.player) - 2
-        return [[self.point(), self.aces(), val_dict[self.dealer[0][1]], rnd]]
+        return [[self.point(), self.aces_(), val_dict[self.dealer[0][1]], rnd]]
